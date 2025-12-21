@@ -5,3 +5,6 @@ def fishington_home(request):
 
 def crewLive(request):
   return render(request, "website/crewLive.html")
+
+def projectsPage(request):
+  return render(request, "website/projects.html")

@@ -1,28 +1,25 @@
-A typical GitHub README file serves as the landing page and documentation for a project, providing essential information for users and potential contributors. It is written in Markdown format and typically includes several standard sections. 
+# 4x4 (Four by Four)
+a friend-first space that helps close-knit groups stay connected, plan intentionally, and care for each other in ways that actually feel human. It turns scattered chats, forgotten birthdays, and mental “who likes what again?” lists into one shared home for your friendships.​
 
-## Typical Sections of a README
+## mission statement
+4x4’s mission is to help friend groups show up for each other with less friction and more intention by unifying planning, social energy, and personal preferences into a single, respectful shared tool.​
 
-A well-structured README typically includes the following sections, in roughly this order:
-- Project Title & Description: A clear, bold title and a concise summary (an "elevator pitch") of what the project does, the problem it solves, and its primary purpose.
-- Visuals/Demo (Optional but Recommended): Screenshots or a GIF demonstrating the project in action can quickly convey its functionality and appeal.
-- Table of Contents (For longer READMEs): A table of contents makes it easier for users to navigate the document.
-- Badges (Optional): Small images that provide metadata such as build status, license type, or project version using services like Shields.io.
+## In practice, 4x4 aims to:
 
-## Getting Started/Installation: 
+- Make it effortless to create, coordinate, and remember plans across a consistent circle of friends, so hanging out becomes easier than canceling.​
 
-- Step-by-step instructions on how to get the project running locally, including any prerequisites or system requirements (e.g., Node.js version, Python version).
-- Usage: Clear examples, often with code snippets, of how to use the project's features and expected output.
-- Features (Optional): A bulleted list of the project's key features or highlights.
-- Technologies Used: A list of the main frameworks, languages, and tools the project is built with.
+- Reduce social burnout and guilt by giving friends a way to share their “social battery” and boundaries, so plans match how people actually feel.​
 
-## Contributing: 
-- Guidelines for how others can contribute to the project, often referencing a separate CONTRIBUTING.md file.
-- License: Information about the project's license (e.g., MIT, GPL), often contained in a separate LICENSE file. You can use choosealicense.com for help selecting one.
-- Authors & Acknowledgments: Credit to the project creators and anyone whose code, data, or inspiration was used.
-- Project Status/Roadmap (Optional): A note on the current development status and any future plans or upcoming features.
-- Support/Contact (Optional): Ways for users to get help, such as an issue tracker or email address. 
+- Support meaningful gestures—like the right gift, on the right date, in the right size—by keeping birthdays, sizes, and interests organized and accessible to the people who care.​
 
-## Best Practices
-- Keep it up-to-date: Ensure the README accurately reflects the current state of the project.
-- Be audience-aware: Tailor your language and technical depth to your target user (e.g., a hiring manager vs. a fellow developer).
-- Use Markdown effectively: Leverage formatting options like headings, lists, and links to enhance readability. 
+## Core principles
+- Friendship over metrics: The product optimizes for relationship quality and mutual care, not streaks, likes, or engagement vanity metrics.​
+
+- Consent and privacy: Every piece of personal info (energy status, sizes, preferences) is shared intentionally, with clear controls over who sees what.​
+
+- Low-friction logistics: Planning, reminders, and data entry are designed to be “set once, benefit often,” respecting that adults have limited time and attention.​
+
+## “Friends by friends” framing
+- Built for stable circles, not for endless follower counts; the app assumes small groups matter most.​
+
+- Designed so that each friend’s profile is a living reference—plans, gifts, sizes, and soft preferences all in one place—curated collaboratively by the people who know them best.​

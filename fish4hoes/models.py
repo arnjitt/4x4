@@ -1,7 +1,17 @@
 from django.db import models
 
 class Friend(models.Model):
+  ENERGY_LEVELS = [
+    ("low", "Low"),
+    ("medium", "Medium"),
+    ("high", "High")
+  ]
   name = models.CharField(max_length=100)
+  energy = models.CharField(
+    max_length=10,
+    choices=ENERGY_LEVELS,
+    default="medium"
+  )
 
   def __str__(self):
     return self.name

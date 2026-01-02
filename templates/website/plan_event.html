@@ -1,122 +1,99 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Plan {{ event_name }}</title>
-    <style>
-        body { font-family: sans-serif; margin: 0; padding: 16px; }
-        h1 { margin-bottom: 16px; }
+<title>Plan {{ event_name }}</title>
+<style>
+body { font-family: sans-serif; margin: 0; padding: 16px; }
+h1 { margin-bottom: 16px; }
 
-        .layout { display: flex; gap: 16px; }
-        .friends-list, .roles { flex: 1; }
+.layout { display: flex; gap: 16px; }
 
-        .friend-item {
-          padding: 4px 6px;
-          margin-bottom: 4px;
-          border: 2px solid #ccc;
-          border-radius: 4px;
-          background: #fff;
-          cursor: grab;
-          font-size: 0.9rem;
-          max-width: 160px;           /* keeps the pill small */
-          white-space: nowrap;        /* single line */
-          overflow: hidden;           /* hide overflow */
-          text-overflow: ellipsis;    /* show “…” if too long */
-        }
+.friends-list { flex: 1; }
 
-        .role-box {
-            border: 2px dashed #bbb;
-            border-radius: 6px;
-            padding: 8px;
-            min-height: 80px;
-            margin-bottom: 12px;
-        }
+.roles { 
+    flex: 2;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+}
 
-        .role-box.active {
-            border-color: #1976d2;
-            background: #e3f2fd;
-        }
+.friend-item {
+    padding: 4px 6px;
+    margin-bottom: 4px;
+    border: 2px solid #ccc;
+    border-radius: 4px;
+    background: #fff;
+    cursor: grab;
+    font-size: 0.9rem;
+    max-width: 160px;           /* keeps the pill small */
+    white-space: nowrap;        /* single line */
+    overflow: hidden;           /* hide overflow */
+    text-overflow: ellipsis;    /* show “…” if too long */
+}
 
-        .role-title {
-            font-weight: bold;
-            margin-bottom: 4px;
-        }
-    </style>
+.role-box {
+    flex: 1 1 calc(33.33% - 12px);
+    border: 2px dashed #bbb;
+    border-radius: 6px;
+    padding: 8px;
+    min-height: 80px;
+    box-sizing: border-box;
+}
+
+.role-box.active {
+    border-color: #1976d2;
+    background: #e3f2fd;
+}
+
+.role-title {
+    font-weight: bold;
+    margin-bottom: 4px;
+}
+</style>
 </head>
 <body>
-    <h1>Plan: {{ event_name }}</h1>
-    <p>Drag friends into roles for this trip.</p>
+  <h1>Plan: {{ event_name }}</h1>
+  <p>Drag friends into roles for this trip.</p>
 
-    <div class="layout">
-        <div class="friends-list">
-            <h3>Available Friends</h3>
-            <!-- sanity check -->
-            <div id="friendsPool">
-              {% for friend, color in friends_with_colors %}
-                <div class="friend-item"
-                  draggable="true"
-                  id="friend-{{ friend.id }}"
-                  style="border-color: {{ color }}; background-color: {{ color }}20;">
-                  <span style="color: {{ color }};">{{ friend.name }}</span>
-                </div>
-              {% empty %}
-                <p>No friends yet. Add some first.</p>
-              {% endfor %}
-            </div>
-</div>
-        </div>
-
-        <div class="roles">
-            <h3>Roles for Basketball Trip</h3>
-
-            <div class="role-box" data-role="driver">
-                <div class="role-title">Driver</div>
-            </div>
-
-            <div class="role-box" data-role="bring_x">
-                <div class="role-title">Bringing X (Snacks)</div>
-            </div>
-
-            <div class="role-box" data-role="bring_y">
-                <div class="role-title">Bringing Y (Drinks)</div>
-            </div>
-        </div>
+  <div class="layout">
+    <div class="friends-list">
+      <h3>Available Friends</h3>
+      <div id="friendsPool">
+        {% for friend, color in friends_with_colors %}
+          <div class="friend-item"
+               draggable="true"
+               id="friend-{{ friend.id }}"
+               style="border-color: {{ color }}; background-color: {{ color }}20;">
+            <span style="color: {{ color }};">{{ friend.name }}</span>
+          </div>
+        {% empty %}
+          <p>No friends yet. Add some first.</p>
+        {% endfor %}
+      </div>
     </div>
 
-    <p><a href="{% url 'chat_room' %}">Back to chat</a></p>
+    <div class="roles">
+      <h3 style="flex-basis:100%;">Roles for Basketball Trip</h3>
 
-    <!-- Existing roles -->
-    <div class="role-box" data-role="driver">
+      <div class="role-box" data-role="driver">
         <div class="role-title">Driver</div>
-    </div>
-    <div class="role-box" data-role="bring_x">
-        <div class="role-title">Bringing X (Snacks)</div>
-    </div>
-    <div class="role-box" data-role="bring_y">
-        <div class="role-title">Bringing Y (Drinks)</div>
-    </div>
+      </div>
 
-    <hr>
+      <div class="role-box" data-role="bring_x">
+        <div class="role-title">Bringing Snacks</div>
+      </div>
 
-    <h3>Carpool Overview</h3>
-    <p style="font-size:0.9rem;">
-        Destination type:
-        <select id="destinationType">
-            <option value="outdoor">Outdoor (rides needed)</option>
-            <option value="house">House (most people self-arrive)</option>
-        </select>
-    </p>
+      <div class="role-box" data-role="bring_y">
+        <div class="role-title">Bringing Drinks</div>
+      </div>
 
-    <div class="role-box" data-role="car_drivers">
-        <div class="role-title">Drivers</div>
-        <!-- drag friends here who are driving -->
+      <!-- Carpool bins also participate in the 3-wide layout -->
     </div>
-    <div class="role-box" data-role="car_riders">
-        <div class="role-title">Riders needing a seat</div>
-        <!-- drag friends here who need a ride -->
-    </div>
-</div>
-<button id="carpoolSummaryBtn">Show carpool summary</button>
-<p id="carpoolSummary" style="font-size:0.9rem;"></p>
+  </div>
+
+  <p><a href="{% url 'chat_room' %}">Back to chat</a></p>
+
+  <button id="carpoolSummaryBtn">Show carpool summary</button>
 
 <script>
   function getNames(container) {
@@ -148,54 +125,51 @@
 
       document.getElementById('carpoolSummary').textContent = text;
   });
-</script>
 
+    const friendItems = document.querySelectorAll('.friend-item');
+    const roleBoxes = document.querySelectorAll('.role-box');
 
-    <script>
-        const friendItems = document.querySelectorAll('.friend-item');
-        const roleBoxes = document.querySelectorAll('.role-box');
+    let draggedId = null;
 
-        let draggedId = null;
-
-        friendItems.forEach(item => {
-            item.addEventListener('dragstart', (e) => {
-                draggedId = e.target.id;
-                e.dataTransfer.setData('text/plain', draggedId);
-            });
+    friendItems.forEach(item => {
+        item.addEventListener('dragstart', (e) => {
+            draggedId = e.target.id;
+            e.dataTransfer.setData('text/plain', draggedId);
         });
+    });
 
-        roleBoxes.forEach(box => {
-            box.addEventListener('dragover', (e) => {
-                e.preventDefault();
-                box.classList.add('active');
-            });
-
-            box.addEventListener('dragleave', () => {
-                box.classList.remove('active');
-            });
-
-            box.addEventListener('drop', (e) => {
-                e.preventDefault();
-                box.classList.remove('active');
-                const id = e.dataTransfer.getData('text/plain') || draggedId;
-                const friendEl = document.getElementById(id);
-                if (friendEl) {
-                    box.appendChild(friendEl);
-                }
-            });
-        });
-
-        // Optional: allow dragging back to pool
-        const pool = document.getElementById('friendsPool');
-        pool.addEventListener('dragover', (e) => e.preventDefault());
-        pool.addEventListener('drop', (e) => {
+    roleBoxes.forEach(box => {
+        box.addEventListener('dragover', (e) => {
             e.preventDefault();
+            box.classList.add('active');
+        });
+
+        box.addEventListener('dragleave', () => {
+            box.classList.remove('active');
+        });
+
+        box.addEventListener('drop', (e) => {
+            e.preventDefault();
+            box.classList.remove('active');
             const id = e.dataTransfer.getData('text/plain') || draggedId;
             const friendEl = document.getElementById(id);
             if (friendEl) {
-                pool.appendChild(friendEl);
+                box.appendChild(friendEl);
             }
         });
-    </script>
+    });
+
+    // Optional: allow dragging back to pool
+    const pool = document.getElementById('friendsPool');
+    pool.addEventListener('dragover', (e) => e.preventDefault());
+    pool.addEventListener('drop', (e) => {
+        e.preventDefault();
+        const id = e.dataTransfer.getData('text/plain') || draggedId;
+        const friendEl = document.getElementById(id);
+        if (friendEl) {
+            pool.appendChild(friendEl);
+        }
+    });
+</script>
 </body>
 </html>

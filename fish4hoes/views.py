@@ -26,6 +26,15 @@ FRIEND_COLORS = [
   "brown",
 ]
 
+def demo_messages():
+  return [
+    {"author": "System", "text": "Welcome to 4x4 demo"},
+    {"author": "Cass", "text": "I love Overwatch!!!"},
+    {"author": "Bryan", "text": "Ohhhhhahhhahhhahhhah"},
+    {"author": "Mikey", "text": "Toughness"},
+    {"author": "System", "text": "These are demonstration messages via demo_messages()"},
+  ]
+
 def assign_friend_colors(friends):
   colored = []
   palette_len = len(FRIEND_COLORS)
@@ -38,12 +47,7 @@ def chat_room(request):
   friends_qs = Friend.objects.all()
   friends_with_colors = assign_friend_colors(friends_qs)
   # sample messages // not from DB
-  messages = [
-    {"author": "System", "text": "Welcome to 4x4 demo"},
-    {"author": "Cass", "text": "I love Overwatch!!!"},
-    {"author": "Bryan", "text": "Ohhhhhahhhahhhahhhah"},
-    {"author": "Mikey", "text": "Toughness"},
-  ]
+  messages = demo_messages()
   return render(
     request, 
     "website/chat_room.html", 
@@ -57,7 +61,7 @@ def chat_room(request):
 ## Page Logic held for adding Friends to database
 def add_friend(request):
   qs = Friend.objects.all()
-
+  messages = demo_messages()
   if request.method == "POST":
     friend_form = FriendForm(request.POST, prefix="new")
     formset = FriendEnergyFormSet(
@@ -80,17 +84,20 @@ def add_friend(request):
   return render(request, "website/add_friend.html", {
     "friend_form": friend_form,
     "formset": formset,
+    "messages": messages,
   })
 
 def plan_event(request):
     friends_qs = Friend.objects.all()
     friends_with_colors = assign_friend_colors(friends_qs)
     event_name = "Basketball Trip"
+    messages = demo_messages()
     return render(
         request,
         "website/plan_event.html",
         {
             "friends_with_colors": friends_with_colors,
             "event_name": event_name,
+            "messages": messages,
         },
     )

@@ -1,0 +1,10 @@
+<div class="mini-chat">
+  <h4>Chat</h4>
+  <div class="mini-messages">
+    {% for msg in messages %}
+      <div class="mini-message">
+        <strong>{{ msg.author }}:</strong> {{ msg.text }}
+      </div>
+    {% endfor %}
+  </div>
+</div>

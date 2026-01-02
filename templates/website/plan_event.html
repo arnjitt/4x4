@@ -94,7 +94,8 @@ h1 { margin-bottom: 16px; }
   <p><a href="{% url 'chat_room' %}">Back to chat</a></p>
 
   <button id="carpoolSummaryBtn">Show carpool summary</button>
-
+<hr>
+{% include "website/_mini_chat.html" %}
 <script>
   function getNames(container) {
       return Array.from(container.querySelectorAll('.friend-item'))

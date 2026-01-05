@@ -1,40 +1,157 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Add / Update Friends</title>
+  <title>Friends Admin</title>
+  <style>
+    body { font-family: sans-serif; margin: 0; padding: 16px; }
+    h1 { margin-bottom: 16px; }
+
+    .layout { display: flex; gap: 24px; align-items: flex-start; }
+
+    .panel {
+      flex: 1;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      padding: 12px 16px;
+      background: #fafafa;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.9rem;
+    }
+
+    th, td {
+      border-bottom: 1px solid #eee;
+      padding: 6px 8px;
+      text-align: left;
+    }
+
+    th {
+      background: #f0f0f0;
+      font-weight: 600;
+    }
+
+    tr:nth-child(even) td {
+      background: #fcfcfc;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 2px 6px;
+      border-radius: 999px;
+      font-size: 0.75rem;
+    }
+
+    .badge-low { background: #ffebee; color: #b71c1c; }
+    .badge-medium { background: #fff3e0; color: #ef6c00; }
+    .badge-high { background: #e8f5e9; color: #2e7d32; }
+
+    .btn {
+      padding: 4px 8px;
+      font-size: 0.8rem;
+      border-radius: 4px;
+      border: 1px solid #ccc;
+      background: #f5f5f5;
+      cursor: pointer;
+    }
+
+    .btn-danger {
+      border-color: #c62828;
+      color: #c62828;
+      background: #ffebee;
+    }
+
+    .btn-danger:hover {
+      background: #ffcdd2;
+    }
+
+    .btn-primary {
+      border-color: #1976d2;
+      color: #1976d2;
+      background: #e3f2fd;
+    }
+
+    .btn-primary:hover {
+      background: #bbdefb;
+    }
+  </style>
 </head>
 <body>
-    <h2>Add Friend</h2>
-    <form method="post">
+  <h1>Friends Admin Panel</h1>
+
+  <div class="layout">
+    <!-- Left: Add new friend -->
+    <div class="panel">
+      <h3>Add Friend</h3>
+      <form method="post">
         {% csrf_token %}
         {{ friend_form.as_p }}
-        <button type="submit" name="save_new">Add Friend</button>
-    </form>
+        <button type="submit" name="save_new" class="btn btn-primary">Add Friend</button>
+      </form>
+    </div>
 
-    <hr>
+    <!-- Right: List + energy edit + delete -->
+    <div class="panel">
+      <h3>Friends List</h3>
 
-    <h2>Update Energy Levels</h2>
-    <form method="post">
+      <form method="post">
         {% csrf_token %}
         {{ formset.management_form }}
         <table>
+          <thead>
             <tr>
-                <th>Name</th>
-                <th>Energy</th>
+              <th>Name</th>
+              <th>Energy</th>
+              <th>Actions</th>
             </tr>
+          </thead>
+          <tbody>
             {% for form in formset %}
-                {{ form.id }}  {# hidden primary key field (important) #}
-                <tr>
-                    <td>{{ form.instance.name }}</td>
-                    <td>{{ form.energy }}</td>
-                </tr>
+              {{ form.id }}
+              <tr>
+                <td>{{ form.instance.name }}</td>
+                <td>
+                  {% if form.instance.energy == "low" %}
+                    <span class="badge badge-low">Low</span>
+                  {% elif form.instance.energy == "medium" %}
+                    <span class="badge badge-medium">Medium</span>
+                  {% elif form.instance.energy == "high" %}
+                    <span class="badge badge-high">High</span>
+                  {% else %}
+                    {{ form.instance.energy }}
+                  {% endif %}
+                  &nbsp;{{ form.energy }}
+                </td>
+                <td>
+                  <button
+                    class="btn btn-danger"
+                    type="submit"
+                    name="delete_friend_id"
+                    value="{{ form.instance.id }}"
+                    onclick="return confirm('Delete {{ form.instance.name }}?');">
+                    -
+                  </button>
+                </td>
+              </tr>
+            {% empty %}
+              <tr>
+                <td colspan="3">No friends yet.</td>
+              </tr>
             {% endfor %}
+          </tbody>
         </table>
-        <button type="submit" name="save_energy">Update levels</button>
-    </form>
 
-    <p><a href="{% url 'chat_room' %}">Back to chat</a></p>
-    <hr>
-    {% include "website/_mini_chat.html" %}
+        <div style="margin-top:8px;">
+          <button type="submit" name="save_energy" class="btn">Save changes</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <p style="margin-top:16px;"><a href="{% url 'chat_room' %}">Back to chat</a></p>
+
+  {% include "website/_mini_chat.html" %}
 </body>
 </html>

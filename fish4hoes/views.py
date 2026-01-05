@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from .models import Friend
 from .forms import FriendForm, FriendEnergyFormSet
 
@@ -63,6 +63,12 @@ def add_friend(request):
   qs = Friend.objects.all()
   messages = demo_messages()
   if request.method == "POST":
+    if "delete_friend_id" in request.POST:
+      friend_id = request.POST.get("delete_friend_id")
+      friend = get_object_or_404(Friend, id=friend_id)
+      friend.delete()
+      return redirect("add_friend")
+    
     friend_form = FriendForm(request.POST, prefix="new")
     formset = FriendEnergyFormSet(
       request.POST, 
@@ -85,6 +91,7 @@ def add_friend(request):
     "friend_form": friend_form,
     "formset": formset,
     "messages": messages,
+    "friends": qs,
   })
 
 def plan_event(request):

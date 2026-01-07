@@ -1,39 +1,68 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>4x4 Demo</title>
-    <style>
-        body { font-family: sans-serif; margin: 0; display: flex; height: 100vh; }
-        .chat { flex: 3; display: flex; flex-direction: column; padding: 16px; border-right: 1px solid #ddd; }
-        .messages { flex: 1; overflow-y: auto; margin-bottom: 8px; }
-        .message { margin-bottom: 6px; }
-        .message-author { font-weight: bold; margin-right: 4px; }
-        .input-row { display: flex; gap: 8px; }
-        .input-row input { flex: 1; padding: 6px; }
-        .sidebar { flex: 1; padding: 16px; background: #fafafa; }
-        .friend { margin-bottom: 8px; padding: 8px; border-radius: 4px; background: #fff; border: 1px solid #eee; }
-        .energy-low { color: #b71c1c; }
-        .energy-medium { color: #f57c00; }
-        .energy-high { color: #2e7d32; }
-        .event-buttons {
-            display: flex;
-            gap: 8px;
-        }
-        .event-btn {
-            padding: 6px 10px;
-            border-radius: 999px;
-            border: 1px solid #ccc;
-            text-decoration: none;
-            font-size: 0.85rem;
-            background: #f5f5f5;
-            color: #333
-        }
+<title>4x4 Demo</title>
+<style>
+body { font-family: sans-serif; margin: 0; display: flex; height: 100vh; }
+.chat { flex: 3; display: flex; flex-direction: column; padding: 16px; border-right: 1px solid #ddd; }
+.messages { flex: 1; overflow-y: auto; margin-bottom: 8px; }
+.message { margin-bottom: 6px; }
+.message-author { font-weight: bold; margin-right: 4px; }
+.input-row { display: flex; gap: 8px; }
+.input-row input { flex: 1; padding: 6px; }
+.sidebar { flex: 1; padding: 16px; background: #fafafa; }
+.friend { margin-bottom: 8px; padding: 8px; border-radius: 4px; background: #fff; border: 1px solid #eee; }
+.energy-low { color: #b71c1c; }
+.energy-medium { color: #f57c00; }
+.energy-high { color: #2e7d32; }
+.event-buttons {
+    display: flex;
+    gap: 8px;
+}
+.event-btn {
+    padding: 6px 10px;
+    border-radius: 999px;
+    border: 1px solid #ccc;
+    text-decoration: none;
+    font-size: 0.85rem;
+    background: #f5f5f5;
+    color: #333
+}
 
-        .event-btn:hover {
-            background: #e0e0e0;
-        }
+.event-btn:hover {
+    background: #e0e0e0;
+}
 
-    </style>
+.energy-icon {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    margin-right: 4px;
+}
+
+.energy-low-icon {
+    width: 0;
+    height: 0;
+    border-left: 6px solid transparent;
+    border-right: 6px solid transparent;
+    border-top: 10px solid #d32f2f;
+    margin-right: 4px;
+}
+
+.energy-medium-icon {
+    background-color: #fbc02d;
+}
+
+.energy-high-icon {
+    width: 0;
+    height: 0;
+    border-left: 6px solid transparent;
+    border-right: 6px solid transparent;
+    border-bottom: 10px solid #388e3c;
+    margin-right: 4px;
+}
+
+</style>
 </head>
 <body>
     <div class="chat">
@@ -62,16 +91,16 @@
     <div class="sidebar">
         <h3>Friends & Energy</h3>
         {% for friend, color in friends_with_colors %}
-            <div class="friend" style="border-left: 4px solid {{  color }};">
-              <div style="color: {{color}};">{{ friend.name }}</div>
-                <div>Energy:
-                    {% if friend.energy == "low" %}
-                        <span class="energy-low"> Low</span>
-                    {% elif friend.energy == "medium" %}
-                        <span class="energy-medium"> Medium</span>
-                    {% else %}
-                        <span class="energy-high"> High</span>
-                    {% endif %}
+            <div class="friend">
+              <div style="display: flex; align-items: center; gap:6px; {{color}};">
+                  <span style="color: {{ color }};">{{ friend.name }}</span>
+                {% if friend.energy == "low" %}
+                    <span class="energy-icon energy-low-icon"></span>
+                {% elif friend.energy == "medium" %}
+                    <span class="energy-icon energy-medium-icon"></span>
+                {% else %}
+                    <span class="energy-icon energy-high-icon"></span>
+                {% endif %}
                 </div>
             </div>
         {% empty %}

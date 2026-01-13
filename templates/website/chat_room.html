@@ -67,22 +67,36 @@ body { font-family: sans-serif; margin: 0; display: flex; height: 100vh; }
 <body>
     <div class="chat">
         <div="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px">
-            <div class="event-buttons">
-            <a href="{% url 'plan_event' %}" class="event-btn">Trip</a>
-            <a href="#" class="event-btn">Party</a>
-            <a href="#" class="event-btn">Meal</a>
+			<div class="event-buttons">
+				<a href="{% url 'plan_event' %}" class="event-btn">Trip</a>
+				<a href="#" class="event-btn">Party</a>
+				<a href="#" class="event-btn">Meal</a>
             </div>
-            <h2>Group Chat</h2>
+			<h2>Group Chat</h2>
+			<hr>
             <div class="messages">
                 {% for msg in messages %}
                     <div class="message">
-                        <span class="message-author">{{ msg.author }}:</span>
+                        <span class="message-author">{{ msg.sender.name }}:</span>
                         <span>{{ msg.text }}</span>
                     </div>
+				{% empty %}
+					<p>No messages yet. Start the conversation</p>
                 {% endfor %}
             </div>
-            <form class="input-row">
-                <input type="text" placeholder="Type a message (demo only)" />
+            <form class="input-row" method="post">
+				{% csrf_token %}
+				<select name="sender_id" style="width: 140px; padding: 6px;">
+					{% for friend, color in friends_with_colors %}
+						<option value="{{ friend.id }}">{{ friend.name }}</option>
+					{% endfor %}
+				</select>
+                <input 
+					type="text" 
+					name="text"
+					maxlength="225"
+					placeholder="Type a message (demo only)"
+					required />
                 <button type="button">Send</button>
             </form>
         </div>

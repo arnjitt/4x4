@@ -3,8 +3,76 @@
   <div class="mini-messages">
     {% for msg in messages %}
       <div class="mini-message">
-        <strong>{{ msg.author }}:</strong> {{ msg.text }}
+		<div>
+			<strong>{{ msg.sender.name }}:</strong> {{ msg.text }}
+		</div>
+		<form method="post" style="margin:0;">
+			{% csrf_token %}
+			<button
+				type="submit"
+				name="delete_message_id"
+				value="{{ msg.id }}"
+				class="mini-delete-btn"
+				style="border:none; background:none; color:#c62828; cursor:pointer; font-weight:bold;"
+				onclick="return confirm('Delete this message?');"
+			>
+			x
+			</button>
+		</form>
       </div>
+	{% empty %}
+	  <p style="font-size:0.8rem; opacity:0.7;">No Messages yet.</p>
     {% endfor %}
   </div>
 </div>
+
+<style>
+.mini-chat {
+	border: 1px solid #ddd;
+	border-radius: 4px;
+	padding: 8px;
+	font-size: 0.85rem;
+	background: #fafafa;
+	max-height: 200px;
+	display: flex;
+	flex-direction: column;
+  }
+.mini-messages {
+	max-height: 200px;
+    overflow-y: auto;
+	padding-right: 12px;
+}
+.mini-message {
+	display:flex;
+	justify-content: space-between;
+	align-items:center;
+	gap: 4px;
+}
+
+.mini-message-text {
+	flex: 1
+}
+
+.mini-message:hover {
+	background-color: #f0f0f0;;
+}
+.mini-message-delete-form {
+	margin:0;
+}
+
+.mini-delete-btn {
+	border:none;
+	background:none;
+	color:#c62828;
+	font-weight: bold;
+	cursor: pointer;
+	padding: 2px 6px;
+	opacity: 0;
+	transition: opacity 0.15s;
+}
+
+.mini-message:hover .mini-delete-btn {
+	opacity: 1;
+}
+
+</style>

@@ -66,47 +66,48 @@ body { font-family: sans-serif; margin: 0; display: flex; height: 100vh; }
 </head>
 <body>
     <div class="chat">
-        <div="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px">
-			<div class="event-buttons">
-				<a href="{% url 'plan_event' %}" class="event-btn">Trip</a>
-				<a href="#" class="event-btn">Party</a>
-				<a href="#" class="event-btn">Meal</a>
-            </div>
-			<h2>Group Chat</h2>
-			<hr>
-            <div class="messages">
-                {% for msg in messages %}
-                    <div class="message">
-                        <span class="message-author">{{ msg.sender.name }}:</span>
-                        <span>{{ msg.text }}</span>
-                    </div>
-				{% empty %}
-					<p>No messages yet. Start the conversation</p>
-                {% endfor %}
-            </div>
-            <form class="input-row" method="post">
-				{% csrf_token %}
-				<select name="sender_id" style="width: 140px; padding: 6px;">
-					{% for friend, color in friends_with_colors %}
-						<option value="{{ friend.id }}">{{ friend.name }}</option>
-					{% endfor %}
-				</select>
-                <input 
-					type="text" 
-					name="text"
-					maxlength="225"
-					placeholder="Type a message (demo only)"
-					required />
-                <button type="button">Send</button>
-            </form>
-        </div>
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+		<h2>Group Chat</h2>
+		<div class="event-buttons">
+			<a href="{% url 'plan_event' %}" class="event-btn">Trip</a>
+			<a href="#" class="event-btn">Party</a>
+			<a href="#" class="event-btn">Meal</a>
+		</div>
+	</div>
+	<hr>
+		<div class="messages" id="chatMessages">
+			{% for msg in messages %}
+				<div class="message">
+					<span class="message-author">{{ msg.sender.name }}:</span>
+					<span>{{ msg.text }}</span>
+				</div>
+			{% empty %}
+				<p>No messages yet. Start the conversation</p>
+			{% endfor %}
+		</div>
+		<form class="input-row" method="post">
+			{% csrf_token %}
+			<select name="sender_id" style="width: 140px; padding: 6px;">
+				{% for friend, color in friends_with_colors %}
+					<option value="{{ friend.id }}">{{ friend.name }}</option>
+				{% endfor %}
+			</select>
+			<input 
+				type="text" 
+				name="text"
+				maxlength="225"
+				placeholder="Type a message (demo only)"
+				required />
+			<button type="submit">Send</button>
+		</form>
+		</div>
     </div>
 
     <div class="sidebar">
         <h3>Friends & Energy</h3>
         {% for friend, color in friends_with_colors %}
             <div class="friend">
-              <div style="display: flex; align-items: center; gap:6px; {{color}};">
+              <div style="display: flex; align-items: center; gap:6px;">
                   <span style="color: {{ color }};">{{ friend.name }}</span>
                 {% if friend.energy == "low" %}
                     <span class="energy-icon energy-low-icon"></span>
@@ -123,3 +124,12 @@ body { font-family: sans-serif; margin: 0; display: flex; height: 100vh; }
     </div>
 </body>
 </html>
+
+<script>
+	document.addEventListener('DOMContentLoaded', function() {
+		const container = document.getElementById('chatMessages');
+		if (container) {
+			container.scrollTop = container.scrollHeight;
+		}
+	});
+</script>

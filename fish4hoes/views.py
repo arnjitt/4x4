@@ -84,12 +84,26 @@ def chat_room(request):
 def add_friend(request):
 	qs = Friend.objects.all()
 	messages = demo_messages()
-
+	chat, _ = Chat.objects.get_or_create(name="general")
+	mini_messages = (
+		Message.objects
+		.filter(chat=chat)
+		.select_related("sender")
+		.order_by("created_at", "id")
+	)
+	# friend look up and DELETE
 	if request.method == "POST":
 		if "delete_friend_id" in request.POST:
 			friend_id = request.POST.get("delete_friend_id")
 			friend = get_object_or_404(Friend, id=friend_id)
 			friend.delete()
+			return redirect("add_friend")
+
+		# message delete function
+		if delete_message_id in request.POST:
+			msg_id = request.POST.get("delete_message_id")
+			msg = get_object_or_404(Message, id=msg_id)
+			msg.delet()
 			return redirect("add_friend")
 		
 	friend_form = FriendForm(request.POST, prefix="new")
@@ -98,7 +112,7 @@ def add_friend(request):
 		queryset=qs, 
 		prefix="energy"
 	)
-	
+
 	if "save_new" in request.POST and friend_form.is_valid():
 		friend_form.save()
 		return redirect("add_friend")
@@ -113,7 +127,7 @@ def add_friend(request):
 	return render(request, "website/add_friend.html", {
 		"friend_form": friend_form,
 		"formset": formset,
-		"messages": messages,
+		"messages": mini_messages,
 		"friends": qs,
 	})
 
@@ -121,13 +135,15 @@ def plan_event(request):
 	friends_qs = Friend.objects.all()
 	friends_with_colors = assign_friend_colors(friends_qs)
 	event_name = "Basketball Trip"
-	messages = demo_messages()
-	return render(
-		request,
-		"website/plan_event.html",
-		{
+	chat, _ = Chat.objects.get_or_create(name="general")
+	mini_messages = (
+		Message.objects
+		.filter(chat=chat)
+		.select_related("sender")
+		.order_by("created_at", "id")
+	)
+	return render(request, "website/plan_event.html", {
 			"friends_with_colors": friends_with_colors,
 			"event_name": event_name,
-			"messages": messages,
-		},
-	)
+			"mini_messages": mini_messages,
+	})

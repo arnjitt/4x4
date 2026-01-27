@@ -1,6 +1,44 @@
+import json
+
 from django.shortcuts import render, redirect, get_object_or_404
-from .models import Friend, Chat, Message
+from django.http import JsonResponse
+from django.views.decorators.http import require_POST
+from django.views.decorators.csrf import csrf_exempt
+
+from .models import Friend, Chat, Message, Event, Carpool, CarpoolRider
 from .forms import FriendForm, FriendEnergyFormSet
+
+# format line
+
+@require_POST
+@csrf_exempt
+def update_carpool_riders(request):
+	"""
+	Expected JSON body:
+	{
+		"carpool_id": 1,
+		"friends_ids": [2,3,4]
+	}
+	"""
+	data = json.loads(request.body("utf-8"))
+
+	carpool_id = data["carpool_id"]
+	friends_ids = data["friend_ids"]
+
+	carpool = Carpool.objects.get(pk=carpool_id)
+
+	# removes riders not in the new list
+	CarpoolRider.objects.filter(carpool=carpool).exclude(
+		friend_id__in=friend_ids
+	).delete()
+
+	for fid in friend_ids:
+		CarpoolRider.objects.get_or_create(
+			carpool=carpool, 
+			friend_id=fid,
+		)
+
+	return JsonResponse({"status": "ok"})
 
 
 
@@ -100,10 +138,10 @@ def add_friend(request):
 			return redirect("add_friend")
 
 		# message delete function
-		if delete_message_id in request.POST:
+		if "delete_message_id "in request.POST:
 			msg_id = request.POST.get("delete_message_id")
 			msg = get_object_or_404(Message, id=msg_id)
-			msg.delet()
+			msg.delete()
 			return redirect("add_friend")
 		
 	friend_form = FriendForm(request.POST, prefix="new")
@@ -132,8 +170,18 @@ def add_friend(request):
 	})
 
 def plan_event(request):
+	event, _ = Event.objects.get_or_create(
+		trip_id="basketball-trip",
+		defaults={"name": "Basketball Trip"}
+	)
 	friends_qs = Friend.objects.all()
 	friends_with_colors = assign_friend_colors(friends_qs)
+
+	carpools = (
+		Carpool.objects
+		.filter(event=event)
+		.prefetch_related("riders__friend", "driver")
+	)
 	event_name = "Basketball Trip"
 	chat, _ = Chat.objects.get_or_create(name="general")
 	mini_messages = (
@@ -143,7 +191,9 @@ def plan_event(request):
 		.order_by("created_at", "id")
 	)
 	return render(request, "website/plan_event.html", {
+			"event": event,
 			"friends_with_colors": friends_with_colors,
+			"carpools": carpools,
 			"event_name": event_name,
 			"mini_messages": mini_messages,
 	})

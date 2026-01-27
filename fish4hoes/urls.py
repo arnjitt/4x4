@@ -26,4 +26,5 @@ urlpatterns = [
     path('chatroom/', views.chat_room, name='chat_room'),
     path('add_friend/', views.add_friend, name='add_friend'),
     path('plan_event/', views.plan_event, name='plan_event'),
+	path("api/carpools/update-riders/", views.update_carpool_riders, name="update_carpool_riders"),
 ]

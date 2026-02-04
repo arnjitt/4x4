@@ -50,7 +50,7 @@ h1 { margin-bottom: 16px; }
     margin-bottom: 4px;
 }
 .friend-item.returning {
-	transition: transform 0.25s ease-out, opacity 0.25s ease-out;
+	transition: transform 0.4s ease-out, opacity 0.4s ease-out;
 	transform: translateX(-10px);
 	opacity:0;
 }
@@ -83,22 +83,20 @@ h1 { margin-bottom: 16px; }
     </div>
 
     <div class="roles">
-      <h3 style="flex-basis:100%;">Roles for Basketball Trip</h3>
+      <h3 style="flex-basis:100%;">Lets Carpool!</h3>
 
-      <div class="role-box" data-role="driver">
-        <div class="role-title">Driver</div>
+      <div class="role-box" id="driverBox" data-role="driver">
+        <div class="role-title">Driver (1)</div>
       </div>
 
-      <div class="role-box" data-role="bring_x">
-        <div class="role-title">Bringing Snacks</div>
+      <div class="role-box" id="ridersBox" data-role="rider">
+        <div class="role-title">Rider (many)</div>
       </div>
-
-      <div class="role-box" data-role="bring_y">
-        <div class="role-title">Bringing Drinks</div>
-      </div>
-
       <!-- Carpool bins also participate in the 3-wide layout -->
     </div>
+	<div>
+		<button id="saveCarpoolBtn">Save this carpool</button>
+	</div>
   </div>
   	<h3>Carpools</h3>
 	<ul id="carpoolsList">
@@ -125,7 +123,6 @@ h1 { margin-bottom: 16px; }
 
   <p><a href="{% url 'chat_room' %}">Back to chat</a></p>
 
-  <button id="carpoolSummaryBtn">Show carpool summary</button>
 <hr>
 {% include "website/_mini_chat.html" %}
 </body>
@@ -150,7 +147,7 @@ h1 { margin-bottom: 16px; }
     roleBoxes.forEach(box => {
 		box.addEventListener('dragover', (e) => {
 			e.preventDefault();
-			box.classList.add('active')
+			box.classList.add('active');
 		});
 
 		box.addEventListener('dragleave', () => {
@@ -164,9 +161,6 @@ h1 { margin-bottom: 16px; }
 			const friendEl = document.getElementById(id);
 			if (friendEl) {
 				box.appendChild(friendEl);
-				if (box.dataset.role === "carpool") {
-					await saveCarpool(box);
-				}
 			}
 		});
     });
@@ -202,6 +196,44 @@ h1 { margin-bottom: 16px; }
 		});
 	}
 
+	async function saveCurrentCarpool() {
+		const driverBox = document.getElementById("driverBox");
+		const ridersBox = document.getElementById("ridersBox");
+
+		const driverEl = driverBox.querySelector(".friend-item");
+		const driverId = driverEl? parseInt(driverEl.dataset.friendId, 10): null;
+
+		const riderIds = Array.from(
+			ridersBox.querySelectorAll(".friend-item")
+		).map(el => parseInt(el.dataset.friendId, 10));
+
+		if (!driverId) {
+			alert("Please choose a driver.");
+			return;
+		}
+
+		await fetch("{% url 'update_carpool_riders' %}", {
+			method: "POST",
+			headers: {
+				"Content-Type": "application/json",
+				"X-CSRFToken": "{{ csrf_token }}"
+			},
+			body: JSON.stringify({
+				carpool_id: 1111,
+				friend_ids: riderIds,
+				driver_id: driverId
+			}),
+		});
+
+		alert("Carpool saved!");
+	}
+
+	document
+		.getElementById("saveCarpoolBtn")
+		.addEventListener("click", () => {
+			saveCurrentCarpool();
+		});
+
 	document.addEventListener("click", (e) => {
 		const friendEl = e.target.closest(".friend-item");
 		if (!friendEl) return;
@@ -209,7 +241,20 @@ h1 { margin-bottom: 16px; }
 		const pool = document.getElementById("friendsPool");
 		if (!pool.contains(friendEl)) {
 			pool.appendChild(friendEl);
+
+			friendEl.classList.remove("returning", "show");
+
+			void friendEl.offsetWidth;
+
+			friendEl.classList.add("returning");
+			requestAnimationFrame(() => {
+				friendEl.classList.add("show");
+			});
+
+			friendEl.addEventListener("transitionend",() => {
+				friendEl.classList.remove("returning", "show");
+			}, { once: true });
 		}
-	})
+	});
 </script>
 </html>

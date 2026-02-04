@@ -17,13 +17,13 @@ def update_carpool_riders(request):
 	Expected JSON body:
 	{
 		"carpool_id": 1,
-		"friends_ids": [2,3,4]
+		"friend_ids": [2,3,4]
 	}
 	"""
-	data = json.loads(request.body("utf-8"))
+	data = json.loads(request.body.decode("utf-8"))
 
 	carpool_id = data["carpool_id"]
-	friends_ids = data["friend_ids"]
+	friend_ids = data["friend_ids"]
 
 	carpool = Carpool.objects.get(pk=carpool_id)
 
